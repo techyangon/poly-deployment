@@ -7,6 +7,16 @@ terraform {
   }
 }
 
+variable "TFC_AWS_PROVIER_AUTH" {
+  description = "Flag to use dynamic credentials"
+  type        = string
+}
+
+variable "TFC_AWS_RUN_ROLE_ARN" {
+  description = "AWS role ARN to be assumed"
+  type        = string
+}
+
 provider "aws" {
   region = "ap-southeast-1"
 }

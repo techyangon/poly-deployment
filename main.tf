@@ -78,18 +78,16 @@ resource "aws_security_group" "db" {
   vpc_id      = aws_vpc.poly_asia.id
 }
 
-resource "allow_vpc_security_group_ingress_rule" "allow_server" {
+resource "aws_vpc_security_group_ingress_rule" "allow_server" {
   security_group_id = aws_security_group.db.id
   ip_protocol       = "tcp"
   from_port         = 5432
   to_port           = 5432
-  security_group    = aws_security_group.default.id
 }
 
-resource "allow_vpc_security_group_egress_rule" "allow_server" {
+resource "aws_vpc_security_group_egress_rule" "allow_server" {
   security_group_id = aws_security_group.db.id
   ip_protocol       = "tcp"
   from_port         = 5432
   to_port           = 5432
-  security_group    = aws_security_group.default.id
 }

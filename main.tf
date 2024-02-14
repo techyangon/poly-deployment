@@ -24,3 +24,25 @@ provider "aws" {
 resource "aws_vpc" "poly_asia" {
   cidr_block = "172.16.0.0/16"
 }
+
+resource "aws_default_network_acl" "default" {
+  default_network_acl_id = aws_vpc.poly_asia.default_network_acl_id
+
+  ingress {
+    rule_no    = 100
+    cidr_block = "0.0.0.0/0"
+    protocol   = "tcp"
+    from_port  = 0
+    to_port    = 0
+    action     = "allow"
+  }
+
+  egress {
+    rule_no    = 100
+    cidr_block = "0.0.0.0/0"
+    protocol   = "tcp"
+    from_port  = 0
+    to_port    = 0
+    action     = "allow"
+  }
+}

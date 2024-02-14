@@ -58,14 +58,14 @@ resource "aws_default_security_group" "default" {
   }
 
   ingress {
-    cidr_blocks = "0.0.0.0/0"
+    cidr_blocks = ["0.0.0.0/0"]
     protocol    = "tcp"
     from_port   = 80
     to_port     = 80
   }
 
   egress {
-    cidr_blocks = "0.0.0.0/0"
+    cidr_blocks = ["0.0.0.0/0"]
     protocol    = "tcp"
     from_port   = 80
     to_port     = 80
@@ -83,7 +83,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_server" {
   ip_protocol                  = "tcp"
   from_port                    = 5432
   to_port                      = 5432
-  referenced_security_group_id = aws.aws_security_group.default.id
+  referenced_security_group_id = aws_default_security_group.defaut.id
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_server" {
@@ -91,5 +91,5 @@ resource "aws_vpc_security_group_egress_rule" "allow_server" {
   ip_protocol                  = "tcp"
   from_port                    = 5432
   to_port                      = 5432
-  referenced_security_group_id = aws.aws_security_group.default.id
+  referenced_security_group_id = aws_default_security_group.defaut.id
 }

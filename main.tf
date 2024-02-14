@@ -25,6 +25,63 @@ resource "aws_vpc" "poly_asia" {
   cidr_block = "172.16.0.0/16"
 }
 
+resource "aws_internet_gateway" "default" {
+  vpc_id = aws_vpc.poly_asia.id
+  tags = {
+    Name = "main"
+  }
+}
+
+resource "aws_subnet" "web" {
+  vpc_id            = aws_vpc.poly_asia.id
+  cidr_block        = "172.16.0.0/21"
+  availability_zone = "ap-southeast-1a"
+  tags = {
+    Name = "public"
+  }
+}
+
+resource "aws_subnet" "db_1" {
+  vpc_id            = aws_vpc.poly_asia.id
+  cidr_block        = "172.16.8.0/21"
+  availability_zone = "ap-southeast-1a"
+  tags = {
+    Name = "private"
+  }
+}
+
+resource "aws_subnet" "db_2" {
+  vpc_id            = aws_vpc.poly_asia.id
+  cidr_block        = "172.16.16.0/21"
+  availability_zone = "ap-southeast-1b"
+  tags = {
+    Name = "private"
+  }
+}
+
+resource "aws_nat_gateway" "public" {
+  subnet_id  = aws_subnet.web
+  depends_on = [aws_internet_gateway.default]
+}
+
+resource "aws_default_route_table" "default" {
+  default_route_table_id = aws_vpc.poly_asia.default_route_table_id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.default.id
+  }
+}
+
+resource "aws_route_table" "db" {
+  vpc_id = aws_vpc.poly_asia.id
+
+  route {
+    gateway_id     = aws_internet_gateway.default.id
+    nat_gateway_id = aws_nat_gateway.public.id
+  }
+}
+
 resource "aws_default_network_acl" "default" {
   default_network_acl_id = aws_vpc.poly_asia.default_network_acl_id
 
@@ -67,8 +124,8 @@ resource "aws_default_security_group" "default" {
   egress {
     cidr_blocks = ["0.0.0.0/0"]
     protocol    = "tcp"
-    from_port   = 80
-    to_port     = 80
+    from_port   = 0
+    to_port     = 0
   }
 }
 

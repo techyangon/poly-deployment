@@ -97,7 +97,7 @@ resource "aws_route_table" "db" {
   vpc_id = aws_vpc.poly_asia.id
 
   route {
-    gateway_id     = aws_internet_gateway.default.id
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.public.id
   }
 }

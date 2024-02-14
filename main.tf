@@ -83,7 +83,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_server" {
   ip_protocol                  = "tcp"
   from_port                    = 5432
   to_port                      = 5432
-  referenced_security_group_id = aws_default_security_group.defaut.id
+  referenced_security_group_id = aws_default_security_group.default.id
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_server" {
@@ -91,5 +91,5 @@ resource "aws_vpc_security_group_egress_rule" "allow_server" {
   ip_protocol                  = "tcp"
   from_port                    = 5432
   to_port                      = 5432
-  referenced_security_group_id = aws_default_security_group.defaut.id
+  referenced_security_group_id = aws_default_security_group.default.id
 }

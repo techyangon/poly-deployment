@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-variable "TFC_AWS_PROVIER_AUTH" {
+variable "TFC_AWS_PROVIDER_AUTH" {
   description = "Flag to use dynamic credentials"
   type        = string
 }

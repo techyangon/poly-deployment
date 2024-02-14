@@ -109,7 +109,7 @@ resource "aws_route_table_association" "default" {
 
 resource "aws_route_table_association" "db" {
   subnet_id      = aws_subnet.db.id
-  route_table_id = aws_default_route_table.db.id
+  route_table_id = aws_route_table.db.id
 }
 
 resource "aws_default_network_acl" "default" {

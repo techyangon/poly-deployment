@@ -9,12 +9,20 @@ terraform {
 
 variable "TFC_AWS_PROVIDER_AUTH" {
   description = "Flag to use dynamic credentials"
-  type        = string
+  type        = bool
 }
 
 variable "TFC_AWS_RUN_ROLE_ARN" {
   description = "AWS role ARN to be assumed"
   type        = string
+}
+
+variable "NAT_ALLOCATION_ID" {
+  type = string
+}
+
+variable "WEB_ALLOCATION_ID" {
+  type = string
 }
 
 provider "aws" {
@@ -60,8 +68,9 @@ resource "aws_subnet" "db_2" {
 }
 
 resource "aws_nat_gateway" "public" {
-  subnet_id  = aws_subnet.web.id
-  depends_on = [aws_internet_gateway.default]
+  allocation_id = var.NAT_ALLOCATION_ID
+  subnet_id     = aws_subnet.web.id
+  depends_on    = [aws_internet_gateway.default]
 }
 
 resource "aws_default_route_table" "default" {
@@ -90,7 +99,7 @@ resource "aws_default_network_acl" "default" {
     cidr_block = "0.0.0.0/0"
     protocol   = "tcp"
     from_port  = 0
-    to_port    = 0
+    to_port    = 65535
     action     = "allow"
   }
 
@@ -99,20 +108,13 @@ resource "aws_default_network_acl" "default" {
     cidr_block = "0.0.0.0/0"
     protocol   = "tcp"
     from_port  = 0
-    to_port    = 0
+    to_port    = 65535
     action     = "allow"
   }
 }
 
 resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.poly_asia.id
-
-  ingress {
-    self      = true
-    protocol  = -1
-    from_port = 0
-    to_port   = 0
-  }
 
   ingress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -125,7 +127,7 @@ resource "aws_default_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
     protocol    = "tcp"
     from_port   = 0
-    to_port     = 0
+    to_port     = 65535
   }
 }
 
@@ -149,4 +151,15 @@ resource "aws_vpc_security_group_egress_rule" "allow_server" {
   from_port                    = 5432
   to_port                      = 5432
   referenced_security_group_id = aws_default_security_group.default.id
+}
+
+resource "aws_network_interface" "server" {
+  subnet_id       = aws_subnet.web.id
+  private_ip      = "172.16.0.4"
+  security_groups = [aws_default_security_group.default.id]
+}
+
+resource "aws_eip_association" "server" {
+  allocation_id        = var.WEB_ALLOCATION_ID
+  network_interface_id = aws_network_interface.server.id
 }

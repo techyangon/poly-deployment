@@ -79,15 +79,17 @@ resource "aws_security_group" "db" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_server" {
-  security_group_id = aws_security_group.db.id
-  ip_protocol       = "tcp"
-  from_port         = 5432
-  to_port           = 5432
+  security_group_id            = aws_security_group.db.id
+  ip_protocol                  = "tcp"
+  from_port                    = 5432
+  to_port                      = 5432
+  referenced_security_group_id = aws.aws_security_group.default.id
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_server" {
-  security_group_id = aws_security_group.db.id
-  ip_protocol       = "tcp"
-  from_port         = 5432
-  to_port           = 5432
+  security_group_id            = aws_security_group.db.id
+  ip_protocol                  = "tcp"
+  from_port                    = 5432
+  to_port                      = 5432
+  referenced_security_group_id = aws.aws_security_group.default.id
 }

@@ -60,7 +60,7 @@ resource "aws_subnet" "db_2" {
 }
 
 resource "aws_nat_gateway" "public" {
-  subnet_id  = aws_subnet.web
+  subnet_id  = aws_subnet.web.id
   depends_on = [aws_internet_gateway.default]
 }
 
